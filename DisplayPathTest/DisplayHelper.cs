@@ -39,13 +39,23 @@ internal static class DisplayHelper
 					string gdiDeviceName = GetGdiDeviceName(monitor.DisplayAdapterId.HighPart, monitor.DisplayAdapterId.LowPart, sourceId);
 					Console.WriteLine($"  GDI Name            : {gdiDeviceName}");
 
-					// use gdiDeviceName to correlate with other APIs such as Screen from Winforms
+					// use gdiDeviceName to correlate with other APIs such as Screen from WinForms
 					Screen? screen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName == gdiDeviceName);
 					if (screen is not null)
 					{
 						Console.WriteLine($"  Is Primary          : {screen.Primary}");
 						Console.WriteLine($"  Working Area        : {screen.WorkingArea}");
 					}
+
+					var presentationRate = path.PresentationRate;
+					if (presentationRate is not null)
+					{
+						var rate = presentationRate.Value.VerticalSyncRate;
+						Console.WriteLine($"  Refresh Rate        : {rate.Numerator / (float)rate.Denominator}");
+					}
+
+					var modes = path.FindModes(DisplayModeQueryOptions.None);
+					Console.WriteLine($"  Modes:              : {modes.Count}");
 
 					Console.WriteLine();
 				}
